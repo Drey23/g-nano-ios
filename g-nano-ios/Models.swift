@@ -11,6 +11,7 @@ import FoundationModels
 @Generable
 struct DetectionResult: Codable {
     var isFound: Bool
+    var isReviewSafe: Bool // Add this new flag!
     var details: String
 }
 

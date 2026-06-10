@@ -7,7 +7,7 @@ class CloudModerationService {
     // 2. Exact configuration parity with your Kotlin setup
     private let model = GenerativeModel(
         name: "gemini-3-flash-preview",
-        apiKey: "AIzaSyAUU4LX-F-F8LpTh6iu4uUfnD4c1N1hSas", // Replace with your real key securely
+        apiKey: Config.API_KEY, // Replace with your real key securely
         generationConfig: GenerationConfig(
             responseMIMEType: "application/json" // <--- Capitalized MIME forces clean JSON output
         ),

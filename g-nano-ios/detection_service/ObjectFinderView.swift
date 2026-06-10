@@ -6,6 +6,7 @@ struct ObjectFinderView: View {
     @State private var selectedImage: UIImage?
     
     @State private var targetObjectText: String = ""
+    @State private var targetReviewText: String = ""
     @State private var isProcessing = false
     @State private var detectionResult: DetectionResult?
     
@@ -18,6 +19,16 @@ struct ObjectFinderView: View {
                 .font(.largeTitle)
                 .bold()
                 .padding(.top)
+            
+            // 1. The Search Text Field (Now triggers search on enter!)
+            TextField("Type the product's review", text: $targetReviewText)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal)
+                .submitLabel(.search)
+                .onSubmit {
+                    // Trigger a new search when the user hits "Search" on the keyboard
+                    runDetection()
+                }
             
             // 1. The Search Text Field (Now triggers search on enter!)
             TextField("What are you looking for? (e.g., 'roses')", text: $targetObjectText)
@@ -43,7 +54,7 @@ struct ObjectFinderView: View {
                 .cornerRadius(12)
             }
             .padding(.horizontal)
-            .disabled(targetObjectText.isEmpty)
+            .disabled(targetReviewText.isEmpty && targetObjectText.isEmpty)
             
             // 3. The Image Preview
             if let selectedImage = selectedImage {
@@ -64,7 +75,7 @@ struct ObjectFinderView: View {
             
             // 4. Status and Results
             if isProcessing {
-                ProgressView("Searching image...")
+                ProgressView("Reading review and Searching image...")
                     .padding()
             } else if let result = detectionResult {
                 VStack(spacing: 8) {
@@ -121,7 +132,8 @@ struct ObjectFinderView: View {
             
             let result = await detectionService.findObjectInImage(
                 uiImage: uiImage,
-                targetObject: targetObjectText
+                targetObject: targetObjectText,
+                reviewString: targetReviewText
             )
             
             await MainActor.run {
